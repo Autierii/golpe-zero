@@ -265,6 +265,7 @@ details.cartao[open] summary::after { content: "–"; }
 .quiz-msg { background: #e9f8ee; border-radius: 6px 18px 18px 18px; padding: 1rem 1.1rem; font-size: 1.12rem; position: relative; max-width: 40rem; box-shadow: var(--sombra); }
 .quiz-msg .remetente { font-size: .82rem; font-weight: 700; color: #1d8f4e; display: block; margin-bottom: .2rem; }
 .quiz-botoes { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; margin-top: 1rem; }
+.quiz-botoes .botao { min-width: 0; padding: .8rem .6rem; white-space: nowrap; }
 .botao-golpe { background: var(--golpe); color: #fff; }
 .botao-seguro { background: var(--ok); color: #fff; }
 .quiz-feedback { margin-top: 1rem; border-radius: 16px; padding: 1rem 1.1rem; }
