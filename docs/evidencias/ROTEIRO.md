@@ -10,8 +10,8 @@ Salve cada print nesta pasta com o nome indicado. O PDF final referencia esses a
 | 04 | `04-nsg.png` | Portal Azure → NSG `nsg-golpezero-app` → regras de entrada: só 80/443 e "negar-todo-o-resto" (sem 22) | IaC |
 | 05 | `05-state-remoto.png` | Portal → Storage `stgolpezerotf…` → container `tfstate` com `golpe-zero/prod.tfstate` | IaC |
 | 06 | `06-infra-apply.png` | Workflow **infra** verde, com o `terraform apply` e os outputs | IaC |
-| 07 | `07-pipeline-barrado.png` | Execução **vermelha**: Gitleaks encontrou a chave de teste (commit "demo: credencial vazada") | Pipeline |
-| 08 | `08-pipeline-corrigido.png` | Execução seguinte **verde** (commit "fix: remove credencial"), com deploy e smoke test | Pipeline |
+| 07 | `07-pipeline-barrado.png` | Execução **vermelha** [#1](https://github.com/Autierii/golpe-zero/actions/runs/43747036950): o Semgrep barrou o Terraform (`storage-queue-services-logging`) e o build nem começou | Pipeline |
+| 08 | `08-pipeline-corrigido.png` | Execução seguinte **verde** (commit "fix(iac): liga logging do Queue service…"), com build, Trivy, deploy e smoke test | Pipeline |
 | 09 | `09-secrets.png` | Settings → Environments → `producao` → secrets (nomes, sem valores) | Pipeline |
 | 10 | `10-trivy.png` | Artefato ou log do Trivy da imagem da API | Pipeline |
 | 11 | `11-dashboard.png` | Grafana com os 4 sinais de ouro preenchidos (depois de rodar `gerar-trafego.sh`) | Observabilidade |
