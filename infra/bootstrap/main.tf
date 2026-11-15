@@ -116,6 +116,20 @@ resource "azurerm_federated_identity_credential" "github_producao" {
   subject             = "repo:${var.github_repo}:environment:producao"
 }
 
+# Formato novo do subject do GitHub, com IDs imutáveis de dono e repositório
+# (um repo apagado e recriado com o mesmo nome NÃO herda o acesso).
+resource "azurerm_federated_identity_credential" "github_producao_ids" {
+  count               = var.github_ids == null ? 0 : 1
+  name                = "github-${var.prefixo}-producao-ids"
+  resource_group_name = azurerm_resource_group.tfstate.name
+  parent_id           = azurerm_user_assigned_identity.github.id
+  audience            = ["api://AzureADTokenExchange"]
+  issuer              = "https://token.actions.githubusercontent.com"
+  subject = format("repo:%s@%d/%s@%d:environment:producao",
+    split("/", var.github_repo)[0], var.github_ids.owner,
+  split("/", var.github_repo)[1], var.github_ids.repo)
+}
+
 # Privilégio mínimo: Contributor só no RG de produção (não na assinatura)...
 resource "azurerm_role_assignment" "github_prod" {
   scope                = azurerm_resource_group.prod.id

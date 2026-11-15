@@ -9,6 +9,12 @@ variable "github_repo" {
   default     = "Autierii/golpe-zero"
 }
 
+variable "github_ids" {
+  description = "IDs numéricos do dono e do repo (gh api repos/DONO/REPO --jq '.owner.id, .id'), usados no subject OIDC novo do GitHub"
+  type        = object({ owner = number, repo = number })
+  default     = null
+}
+
 variable "prefixo" {
   description = "Prefixo curto (só letras minúsculas e números) dos nomes dos recursos"
   type        = string

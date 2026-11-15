@@ -2,5 +2,6 @@
 subscription_id    = "00000000-0000-0000-0000-000000000000"
 github_repo        = "Autierii/golpe-zero"
 location           = "northcentralus"
+github_ids         = { owner = 127115203, repo = 1459114196 }
 email_alerta_custo = "seu-email@exemplo.com"
 orcamento_usd      = 60
