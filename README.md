@@ -18,6 +18,17 @@ Disciplina: **Secure DevOps Tools & Cloud Computing** (Prof. Gabriel Arcanjo) ·
 
 ---
 
+## O que o MVP faz
+
+| Tela | Para quê |
+|---|---|
+| **Verificar** | Colar o texto ou mandar o print (com prévia, arrastar ou Ctrl+V). A resposta mostra um medidor de risco, o tipo de golpe, "o que fazer agora", os sinais encontrados, a fonte oficial e leitura em voz alta |
+| **Família** | Avisa um familiar pelo WhatsApp com a mensagem pronta. O contato fica **só no aparelho**, nada vai para o servidor |
+| **Números** | Estelionato no Brasil (Anuário FBSP 2026) e população 60+ em SP (IBGE, Censo 2022), sempre com a fonte, e estatísticas ao vivo do próprio app |
+| **Aprender** | 8 golpes comuns em linguagem simples, o passo a passo "caí no golpe, e agora?" e o quiz "É golpe ou não?" |
+
+Acessibilidade: fonte Atkinson Hyperlegible (feita para baixa visão), A+/A−, alto contraste, navegação por teclado, leitor de tela e alvos de toque grandes. Sem framework, sem rastreador e sem CDN: tudo é servido pelo próprio domínio, sob CSP estrita.
+
 ## Ficha Técnica do MVP
 
 | Campo | Conteúdo |

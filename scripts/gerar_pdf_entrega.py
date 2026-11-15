@@ -150,7 +150,7 @@ def evidencia(pdf: PDF, numero: str) -> None:
         else:
             if pdf.get_y() > pdf.h - 110:
                 pdf.add_page()
-            pdf.image(str(arq), w=largura * 0.85)
+            pdf.image(str(arq), w=largura if arq.stem.startswith("01-") else largura * 0.85)
         pdf.set_font("ui", "", 8)
         pdf.set_text_color(90)
         pdf.cell(0, 5, arq.name, new_x=XPos.LMARGIN, new_y=YPos.NEXT)
@@ -197,10 +197,14 @@ def main() -> None:
     pdf.set_font("ui", "B", 16)
     pdf.cell(0, 10, "O MVP e a arquitetura", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
     pdf.set_font("ui", "", 10)
-    pdf.multi_cell(0, 5, "O idoso cola o texto ou envia o print e recebe o veredito com fonte oficial, o "
-                         "próximo passo e leitura em voz alta. Fluxo de produção: internet → NSG (80/443) → Caddy "
-                         "(TLS) → frontend / API FastAPI (RAG + YOLO) → Ollama (Qwen 2.5:3B), com Prometheus e "
-                         "Grafana na mesma VM. O GitHub Actions publica no GHCR e faz o deploy por OIDC.")
+    pdf.multi_cell(0, 5, "Quatro telas, pensadas para 60+ (fonte Atkinson Hyperlegible, A+/A-, alto contraste, "
+                         "leitura em voz alta): Verificar (texto ou print -> medidor de risco, tipo de golpe, o que "
+                         "fazer agora, sinais e fonte oficial); Modo Família (aviso pronto pelo WhatsApp, contato "
+                         "guardado só no aparelho); Números (Anuário FBSP e IBGE, com fonte, e estatísticas ao vivo do "
+                         "app); Aprender (8 golpes comuns, 'caí no golpe, e agora?' e quiz). Fluxo de produção: "
+                         "internet -> NSG (80/443) -> Caddy (TLS) -> frontend / API FastAPI (RAG + YOLO) -> Ollama "
+                         "(Qwen 2.5:3B), com Prometheus e Grafana na mesma VM. O GitHub Actions publica no GHCR e faz "
+                         "o deploy por OIDC.", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
     pdf.ln(2)
     evidencia(pdf, "01")
     diagrama = RAIZ / "docs" / "arquitetura.png"
