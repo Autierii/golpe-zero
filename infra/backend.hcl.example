@@ -1,0 +1,4 @@
+# Copie para backend.hcl (fora do Git) com os valores do `terraform output` do bootstrap:
+#   terraform init -backend-config=backend.hcl
+resource_group_name  = "rg-golpezero-tfstate"
+storage_account_name = "stgolpezerotfxxxxxx"

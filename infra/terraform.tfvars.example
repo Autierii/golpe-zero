@@ -1,0 +1,4 @@
+# Copie para terraform.tfvars (fora do Git). No CI estes valores vêm de GitHub Secrets.
+subscription_id = "00000000-0000-0000-0000-000000000000"
+dominio_label   = "golpezero"
+vm_size         = "Standard_D4as_v5"

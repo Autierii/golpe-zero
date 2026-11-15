@@ -1,0 +1,12 @@
+# Exceções conscientes do Trivy. Cada uma tem justificativa; o resto barra o pipeline.
+
+# NSG aceita 80/443 vindo da internet: é um site público para o cidadão.
+# Só essas portas. SSH/RDP/admin continuam bloqueados (regra negar-todo-o-resto).
+AZU-0047
+AVD-AZU-0047
+
+# Storage do state aceita rede pública porque os runners do GitHub Actions
+# não têm IP fixo. Compensação: shared key desligada (só Entra ID/RBAC),
+# TLS 1.2, sem acesso anônimo, versionamento e soft delete.
+AZU-0012
+AVD-AZU-0012

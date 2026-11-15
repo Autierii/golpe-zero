@@ -1,0 +1,12 @@
+# Regras padrão do Gitleaks + exceções documentadas (só arquivos de EXEMPLO,
+# que contêm placeholders e nunca valores reais).
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Arquivos de exemplo com placeholders"
+paths = [
+  '''\.env\.example$''',
+  '''\.tfvars\.example$''',
+  '''backend\.hcl\.example$''',
+]

@@ -1,0 +1,225 @@
+# ---------------------------------------------------------------------------
+# Pipeline DevSecOps do Golpe Zero
+#   1. Gitleaks  — segredo vazado no código ou no histórico  -> barra tudo
+#   2. Semgrep   — SAST (Python, Dockerfile, Terraform, JS)   -> barra tudo
+#   3. IaC       — terraform fmt/validate + Trivy config + Caddyfile válido
+#   4. Build     — 3 imagens; Trivy na imagem (CRITICAL corrigível barra)
+#   5. Deploy    — só na main: push no GHCR e deploy na VM via OIDC
+#   6. Smoke     — a URL pública responde
+# Nenhuma etapa usa senha da nuvem: o login na Azure é por OIDC.
+# Actions fixadas por SHA (cadeia de suprimentos).
+# ---------------------------------------------------------------------------
+name: devsecops
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: devsecops-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  gitleaks:
+    name: "Segredos (Gitleaks)"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0 # varre o histórico inteiro, não só o último commit
+      - uses: gitleaks/gitleaks-action@e0c47f4f8be36e29cdc102c57e68cb5cbf0e8d1e # v3.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_CONFIG: .gitleaks.toml
+          GITLEAKS_ENABLE_COMMENTS: "false"
+
+  semgrep:
+    name: "SAST (Semgrep)"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    container:
+      image: semgrep/semgrep:latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Semgrep (falha se houver achado)
+        run: |
+          semgrep scan \
+            --config p/default --config p/python --config p/dockerfile \
+            --config p/terraform --config p/javascript \
+            --metrics off --error \
+            --sarif-output semgrep.sarif --text
+      - name: Envia resultado para a aba Security
+        if: always() && github.event_name == 'push'
+        uses: github/codeql-action/upload-sarif@33d7b85da1a04171e211befe2c739303b9a4c066 # v4.39.3
+        with:
+          sarif_file: semgrep.sarif
+          category: semgrep
+
+  iac:
+    name: "IaC (Terraform + Trivy config)"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4.0.1
+      - name: terraform fmt e validate
+        run: |
+          terraform fmt -check -recursive infra
+          for d in infra infra/bootstrap; do
+            terraform -chdir=$d init -backend=false -input=false >/dev/null
+            terraform -chdir=$d validate
+          done
+      - name: Trivy — configuração (Terraform, Dockerfiles, compose)
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          scan-type: config
+          scan-ref: .
+          severity: CRITICAL,HIGH
+          exit-code: "1"
+          trivyignores: .trivyignore
+      - name: Caddyfile válido
+        run: |
+          docker run --rm -e DOMINIO=exemplo.com -e METRICS_TOKEN=x \
+            -v "$PWD/deploy/Caddyfile:/etc/caddy/Caddyfile:ro" \
+            caddy:2.11.9-alpine caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile
+
+  build:
+    name: "Build + Trivy (${{ matrix.servico }})"
+    needs: [gitleaks, semgrep, iac]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { servico: api, contexto: ./api }
+          - { servico: frontend, contexto: ./frontend }
+          - { servico: ollama, contexto: ./ollama }
+          - { servico: prometheus, contexto: ./observability/prometheus }
+          - { servico: grafana, contexto: ./observability/grafana }
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Nome da imagem
+        id: img
+        run: echo "nome=ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/golpe-zero-${{ matrix.servico }}" >> "$GITHUB_OUTPUT"
+      - name: Libera disco no runner (imagem da API tem torch)
+        if: matrix.servico == 'api' || matrix.servico == 'ollama'
+        run: sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+      - name: Build
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: ${{ matrix.contexto }}
+          load: true
+          push: false
+          provenance: false
+          tags: |
+            ${{ steps.img.outputs.nome }}:${{ github.sha }}
+            ${{ steps.img.outputs.nome }}:latest
+          labels: |
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+            org.opencontainers.image.revision=${{ github.sha }}
+          cache-from: type=gha,scope=${{ matrix.servico }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.servico }}
+      - name: Confere que a imagem não roda como root
+        run: |
+          u=$(docker image inspect --format '{{.Config.User}}' ${{ steps.img.outputs.nome }}:${{ github.sha }})
+          echo "USER da imagem: '${u}'"
+          if [ -z "$u" ] || [ "$u" = "root" ] || [ "${u%%:*}" = "0" ]; then echo "::error::imagem roda como root"; exit 1; fi
+      - name: Trivy — relatório completo (HIGH e CRITICAL)
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          image-ref: ${{ steps.img.outputs.nome }}:${{ github.sha }}
+          severity: CRITICAL,HIGH
+          scanners: vuln,secret
+          format: table
+          output: trivy-${{ matrix.servico }}.txt
+          exit-code: "0"
+      - name: Trivy — portão (CRITICAL com correção disponível barra o deploy)
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          image-ref: ${{ steps.img.outputs.nome }}:${{ github.sha }}
+          severity: CRITICAL
+          scanners: vuln,secret
+          ignore-unfixed: true
+          exit-code: "1"
+          trivyignores: .trivyignore
+          skip-setup-trivy: true
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: trivy-${{ matrix.servico }}
+          path: trivy-${{ matrix.servico }}.txt
+      - name: Publica no GHCR (só main)
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+          docker push ${{ steps.img.outputs.nome }}:${{ github.sha }}
+          docker push ${{ steps.img.outputs.nome }}:latest
+          docker logout ghcr.io
+
+  deploy:
+    name: "Deploy na Azure (OIDC)"
+    needs: [build]
+    # AZURE_PRONTO=true é ligado (Settings > Variables) depois do bootstrap da nuvem
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.AZURE_PRONTO == 'true'
+    runs-on: ubuntu-latest
+    environment:
+      name: producao
+      url: ${{ steps.url.outputs.url }}
+    permissions:
+      contents: read
+      id-token: write # troca o token do GitHub por um token da Azure (OIDC)
+      packages: read  # a VM baixa as imagens com um token só de leitura
+    env:
+      RG: ${{ vars.RESOURCE_GROUP_PROD || 'rg-golpezero-prod' }}
+      VM: ${{ vars.VM_NAME || 'vm-golpezero' }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Login na Azure sem senha (OIDC)
+        uses: azure/login@a641126d1b8aa4d1fa005f4f92df94a3a4c4c906 # v3.1.0
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      - name: Deploy na VM (run-command; porta 22 continua fechada)
+        env:
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          NOME="deploy-${GITHUB_SHA::7}-${GITHUB_RUN_ATTEMPT}"
+          az vm run-command create -g "$RG" --vm-name "$VM" --name "$NOME" \
+            --script "$(cat deploy/deploy.sh)" \
+            --parameters "TAG=${GITHUB_SHA}" "GHCR_USER=${GITHUB_ACTOR}" \
+            --protected-parameters "GHCR_TOKEN=${GHCR_TOKEN}" \
+            --timeout-in-seconds 1800 --async-execution false --only-show-errors -o none || true
+          az vm run-command show -g "$RG" --vm-name "$VM" --name "$NOME" --instance-view \
+            --query "instanceView" -o json > resultado.json
+          python3 - <<'EOF'
+          import json, sys
+          r = json.load(open("resultado.json"))
+          print("== saída da VM ==\n" + (r.get("output") or ""))
+          if r.get("error"): print("== erros ==\n" + r["error"])
+          print(f"estado={r.get('executionState')} exit={r.get('exitCode')}")
+          sys.exit(0 if r.get("executionState") == "Succeeded" and r.get("exitCode") == 0 else 1)
+          EOF
+          az vm run-command delete -g "$RG" --vm-name "$VM" --name "$NOME" --yes --only-show-errors || true
+      - name: URL pública
+        id: url
+        run: |
+          fqdn=$(az network public-ip show -g "$RG" -n pip-golpezero --query dnsSettings.fqdn -o tsv)
+          echo "url=https://${fqdn}" >> "$GITHUB_OUTPUT"
+      - name: Smoke test
+        run: |
+          for i in $(seq 1 30); do
+            if curl -fsS --max-time 10 "${{ steps.url.outputs.url }}/api/health"; then echo; echo "MVP no ar"; exit 0; fi
+            echo "aguardando a aplicação ($i/30)..."; sleep 20
+          done
+          echo "::error::MVP não respondeu"; exit 1

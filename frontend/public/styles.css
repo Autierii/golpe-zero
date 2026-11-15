@@ -1,0 +1,44 @@
+/* Golpe Zero — pensado para 60+: fonte grande, alto contraste (WCAG AA+), alvos de toque ≥ 56px */
+:root {
+  --fundo: #ffffff; --texto: #111111; --primaria: #0b3d91; --primaria-escura: #072a66;
+  --golpe: #b00020; --golpe-fundo: #fde7ea; --ok: #1b5e20; --ok-fundo: #e6f4ea;
+  --duvida: #7a4a00; --duvida-fundo: #fff4dc; --borda: #444; --foco: #ffbf00;
+}
+* { box-sizing: border-box; }
+html { font-size: 125%; }               /* 20px de base */
+body { margin: 0; font-family: system-ui, "Segoe UI", Roboto, Arial, sans-serif;
+       line-height: 1.5; color: var(--texto); background: var(--fundo); }
+.pular { position: absolute; left: -999px; }
+.pular:focus { left: 1rem; top: 1rem; background: var(--foco); padding: .5rem; z-index: 9; }
+.topo { background: var(--primaria); color: #fff; padding: 1rem 1.25rem; }
+.topo h1 { margin: 0; font-size: 1.8rem; }
+.subtitulo { margin: .25rem 0 0; font-size: 1.05rem; }
+main { max-width: 44rem; margin: 0 auto; padding: 1rem; }
+.cartao { border: 2px solid var(--borda); border-radius: 12px; padding: 1.25rem; margin: 1rem 0; }
+.rotulo { display: block; font-weight: 700; margin-bottom: .5rem; }
+textarea { width: 100%; font-size: 1.1rem; padding: .75rem; border: 2px solid var(--borda);
+           border-radius: 8px; font-family: inherit; }
+.ou { text-align: center; font-weight: 700; margin: .75rem 0; }
+.botao { display: block; width: 100%; min-height: 3.2rem; font-size: 1.15rem; font-weight: 700;
+         border-radius: 10px; padding: .75rem 1rem; cursor: pointer; text-align: center;
+         border: 3px solid var(--primaria); font-family: inherit; }
+.botao-principal { background: var(--primaria); color: #fff; margin-top: 1rem; font-size: 1.3rem; }
+.botao-principal:hover { background: var(--primaria-escura); }
+.botao-principal[disabled] { opacity: .6; cursor: wait; }
+.botao-secundario { background: #fff; color: var(--primaria); }
+:focus-visible { outline: 4px solid var(--foco); outline-offset: 3px; }
+.escondido { display: none !important; }
+#foto.escondido { display: block !important; position: absolute; opacity: 0; width: 1px; height: 1px; }
+.foto-nome { font-weight: 700; min-height: 1.5em; }
+.grande { font-size: 1.2rem; font-weight: 600; }
+.veredito { font-size: 1.6rem; font-weight: 800; padding: 1rem; border-radius: 10px; margin-top: 0; }
+.v-golpe { background: var(--golpe-fundo); color: var(--golpe); border: 3px solid var(--golpe); }
+.v-ok { background: var(--ok-fundo); color: var(--ok); border: 3px solid var(--ok); }
+.v-duvida { background: var(--duvida-fundo); color: var(--duvida); border: 3px solid var(--duvida); }
+.fonte { font-size: .95rem; }
+.acoes { display: grid; gap: .75rem; margin-top: 1rem; }
+.aviso { background: #f2f5fb; }
+h2 { font-size: 1.2rem; margin: 1rem 0 .5rem; }
+.rodape { text-align: center; font-size: .85rem; padding: 1rem; color: #333; }
+.rodape a { color: var(--primaria); }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }

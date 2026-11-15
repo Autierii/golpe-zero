@@ -1,0 +1,15 @@
+# Dependências de EXECUÇÃO da API (o repo de GenAI tem também as de treino/notebooks).
+# torch vem do índice CPU no Dockerfile: imagem bem menor que a versão CUDA.
+# Versões fixas = build reprodutível; o Trivy avisa quando alguma precisar subir.
+fastapi==0.163.1
+uvicorn==0.54.0
+python-multipart==0.0.33
+pydantic==2.14.3
+requests==2.34.2
+numpy==2.5.4
+sentence-transformers==6.3.0
+pillow==13.0.0
+opencv-python-headless==5.0.0.93
+ultralytics==8.4.214
+prometheus-client==0.26.0
+prometheus-fastapi-instrumentator==8.1.0

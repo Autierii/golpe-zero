@@ -1,0 +1,114 @@
+# Golpe Zero — stack completa (mesmo arquivo no seu PC e na VM da Azure)
+#   Local:  cp .env.example .env  &&  docker compose up --build
+#   VM:     o deploy do GitHub Actions roda `docker compose pull && docker compose up -d`
+# Só o Caddy publica portas (80/443). API, Ollama e node-exporter ficam na rede interna.
+
+x-endurecido: &endurecido
+  restart: unless-stopped
+  security_opt: ["no-new-privileges:true"]
+  cap_drop: ["ALL"]
+  logging:
+    driver: json-file
+    options: { max-size: "10m", max-file: "3" }
+
+services:
+  caddy:
+    <<: *endurecido
+    image: caddy:2.11.9-alpine
+    cap_add: ["NET_BIND_SERVICE"]
+    ports: ["80:80", "443:443", "443:443/udp"]
+    environment:
+      DOMINIO: ${DOMINIO:-localhost}
+      METRICS_TOKEN: ${METRICS_TOKEN:?defina METRICS_TOKEN no .env}
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on: [frontend, api]
+    networks: [borda]
+
+  frontend:
+    <<: *endurecido
+    image: ${REGISTRY:-ghcr.io/autierii}/golpe-zero-frontend:${TAG:-latest}
+    build: ./frontend
+    read_only: true
+    tmpfs: ["/tmp", "/var/cache/nginx"]
+    mem_limit: 128m
+    networks: [borda]
+
+  api:
+    <<: *endurecido
+    image: ${REGISTRY:-ghcr.io/autierii}/golpe-zero-api:${TAG:-latest}
+    build: ./api
+    read_only: true
+    tmpfs: ["/tmp:size=256m"]
+    environment:
+      OLLAMA_URL: http://ollama:11434
+      OLLAMA_MODEL: ${OLLAMA_MODEL:-qwen2.5:3b}
+      OLLAMA_TIMEOUT: "120"
+    mem_limit: 3g
+    depends_on: [ollama]
+    networks: [borda, interna]
+
+  ollama:
+    <<: *endurecido
+    image: ${REGISTRY:-ghcr.io/autierii}/golpe-zero-ollama:${TAG:-latest}
+    build: ./ollama
+    environment:
+      OLLAMA_MODEL: ${OLLAMA_MODEL:-qwen2.5:3b}
+    volumes: ["ollama_models:/models"]
+    mem_limit: 8g
+    networks: [interna]
+
+  node-exporter:
+    <<: *endurecido
+    image: prom/node-exporter:v1.12.1
+    command: ["--path.rootfs=/host", "--collector.disable-defaults",
+              "--collector.cpu", "--collector.meminfo", "--collector.loadavg",
+              "--collector.filesystem", "--collector.netdev", "--collector.diskstats"]
+    pid: host
+    read_only: true
+    volumes: ["/:/host:ro,rslave"]
+    mem_limit: 64m
+    networks: [borda]
+
+  # ---------------- observabilidade (4 sinais de ouro + alertas) ----------------
+  prometheus:
+    <<: *endurecido
+    image: ${REGISTRY:-ghcr.io/autierii}/golpe-zero-prometheus:${TAG:-latest}
+    build: ./observability/prometheus
+    command: ["--config.file=/etc/prometheus/prometheus.yml", "--storage.tsdb.retention.time=15d",
+              "--storage.tsdb.path=/prometheus"]
+    read_only: true
+    volumes: ["prometheus_data:/prometheus"]
+    mem_limit: 512m
+    networks: [borda]
+
+  grafana:
+    <<: *endurecido
+    image: ${REGISTRY:-ghcr.io/autierii}/golpe-zero-grafana:${TAG:-latest}
+    build: ./observability/grafana
+    environment:
+      GF_SERVER_DOMAIN: ${DOMINIO:-localhost}
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:?defina GRAFANA_ADMIN_PASSWORD no .env}
+      # o professor abre o dashboard sem login, só leitura (métricas não têm dado pessoal)
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Viewer
+    volumes: ["grafana_data:/var/lib/grafana"]
+    mem_limit: 512m
+    depends_on: [prometheus]
+    networks: [borda]
+
+networks:
+  borda: {}
+  # rede da API com o Ollama; o Ollama precisa sair para a internet só para
+  # baixar o modelo na primeira subida, por isso não é "internal: true".
+  interna: {}
+
+volumes:
+  prometheus_data: {}
+  grafana_data: {}
+  caddy_data: {}
+  caddy_config: {}
+  ollama_models: {}

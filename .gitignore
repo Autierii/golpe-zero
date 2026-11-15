@@ -1,0 +1,26 @@
+# ---- segredos e configuração local (NUNCA versionar) ----
+.env
+.env.*
+!.env.example
+*.tfvars
+!*.tfvars.example
+backend.hcl
+observability/secrets/
+
+# ---- Terraform: state e cache ficam fora do repositório ----
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+tfplan
+crash.log
+.terraform.tfstate.lock.info
+
+# ---- Python / editores ----
+__pycache__/
+*.pyc
+.venv/
+.vscode/
+.idea/
+.DS_Store
+api/vision/output_inferencia/

@@ -1,0 +1,7 @@
+**/__pycache__
+**/*.pyc
+.env*
+*.tfvars
+.venv
+vision/output_inferencia
+tests

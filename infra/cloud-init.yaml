@@ -1,0 +1,48 @@
+#cloud-config
+# Preparação da VM na primeira subida. Não contém segredo fixo: o
+# metrics_token é gerado pelo Terraform e entra só no .env (modo 600).
+package_update: true
+package_upgrade: true
+packages:
+  - ca-certificates
+  - curl
+  - unattended-upgrades
+
+write_files:
+  - path: /opt/golpe-zero/.env
+    permissions: "0600"
+    owner: root:root
+    content: |
+      DOMINIO=${dominio}
+      METRICS_TOKEN=${metrics_token}
+      GRAFANA_ADMIN_PASSWORD=${grafana_senha}
+      OLLAMA_MODEL=${ollama_model}
+      REGISTRY=${registry}
+      TAG=latest
+      GITHUB_REPO=${github_repo}
+  - path: /etc/apt/apt.conf.d/20auto-upgrades
+    content: |
+      APT::Periodic::Update-Package-Lists "1";
+      APT::Periodic::Unattended-Upgrade "1";
+  - path: /etc/docker/daemon.json
+    content: |
+      {
+        "log-driver": "json-file",
+        "log-opts": { "max-size": "10m", "max-file": "3" },
+        "live-restore": true,
+        "no-new-privileges": true
+      }
+
+runcmd:
+  # Docker Engine + plugin compose pelo repositório oficial
+  - install -m 0755 -d /etc/apt/keyrings
+  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+  - chmod a+r /etc/apt/keyrings/docker.asc
+  - echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo $VERSION_CODENAME) stable" > /etc/apt/sources.list.d/docker.list
+  - apt-get update
+  - DEBIAN_FRONTEND=noninteractive apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+  - systemctl enable --now docker
+  # SSH desligado: a administração é só por `az vm run-command`
+  - systemctl disable --now ssh.socket ssh.service || true
+  - mkdir -p /opt/golpe-zero/deploy
+  - touch /var/lib/golpe-zero-pronto
