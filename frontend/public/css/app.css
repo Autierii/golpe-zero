@@ -296,6 +296,9 @@ input[type="text"]:focus { border-color: var(--azul); outline: none; box-shadow:
 }
 @media (max-width: 560px) {
   .grade-4 { grid-template-columns: 1fr; }
+  .abas button { font-size: .95rem; gap: .35rem; padding: 0 .4rem; white-space: nowrap; }
+  .abas svg { width: 1.1rem; height: 1.1rem; }
+  .cartao { padding: 1.1rem; }
   main { padding-left: .85rem; padding-right: .85rem; }
 }
 .grade-2 > *, .grade-3 > *, .grade-4 > * { min-width: 0; }
