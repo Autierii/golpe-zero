@@ -219,7 +219,22 @@ jobs:
       - name: Smoke test
         run: |
           for i in $(seq 1 30); do
-            if curl -fsS --max-time 10 "${{ steps.url.outputs.url }}/api/health"; then echo; echo "MVP no ar"; exit 0; fi
+            if curl -fsS --max-time 10 "${{ steps.url.outputs.url }}/api/health"; then echo; echo "MVP no ar"; break; fi
+            if [ "$i" = 30 ]; then echo "::error::MVP não respondeu"; exit 1; fi
             echo "aguardando a aplicação ($i/30)..."; sleep 20
           done
-          echo "::error::MVP não respondeu"; exit 1
+      - name: Teste de segurança na URL pública
+        run: |
+          U="${{ steps.url.outputs.url }}"
+          falha=0
+          for p in /metrics /node-metrics; do
+            c=$(curl -s -o /dev/null -w "%{http_code}" "$U$p")
+            echo "$p sem token -> HTTP $c"; [ "$c" = "404" ] || { echo "::error::$p exposto sem token"; falha=1; }
+          done
+          h=$(curl -sI "$U/")
+          for cab in strict-transport-security content-security-policy x-frame-options x-content-type-options; do
+            echo "$h" | grep -qi "^$cab:" && echo "cabeçalho $cab ok" || { echo "::error::falta $cab"; falha=1; }
+          done
+          c=$(curl -s -o /dev/null -w "%{http_code}" "http://${U#https://}/")
+          echo "HTTP puro -> $c (esperado redirecionar)"; [ "$c" = "308" ] || [ "$c" = "301" ] || falha=1
+          exit $falha
