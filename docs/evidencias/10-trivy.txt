@@ -1,0 +1,32 @@
+Trivy nas 5 imagens publicadas (run 43756658079)
+Portão do pipeline: vulnerabilidade CRITICAL com correção disponível = deploy barrado.
+Resultado: 0 CRITICAL em todas as imagens. HIGH ficam registrados no artefato para acompanhamento.
+
+== api
+ghcr.io/autierii/golpe-zero-api:7f4fa8d583523350e89e0c788ad6059f9905e469 (debian 13.7) -> Total: 49 (HIGH: 49, CRITICAL: 0)
+Python (python-pkg) -> Total: 3 (HIGH: 3, CRITICAL: 0)
+
+== frontend
+   nenhuma vulnerabilidade HIGH/CRITICAL
+
+== grafana
+usr/share/grafana/data/plugins-bundled/grafana-postgresql-datasource/gpx_grafana_postgresql_datasource_linux_amd64 (gobinary) -> Total: 1 (HIGH: 1, CRITICAL: 0)
+usr/share/grafana/data/plugins-bundled/grafana-pyroscope-datasource/gpx_grafana-pyroscope-datasource_linux_amd64 (gobinary) -> Total: 1 (HIGH: 1, CRITICAL: 0)
+usr/share/grafana/data/plugins-bundled/influxdb/gpx_grafana_influxdb_datasource_linux_amd64 (gobinary) -> Total: 1 (HIGH: 1, CRITICAL: 0)
+usr/share/grafana/data/plugins-bundled/jaeger/gpx_grafana-jaeger-datasource_linux_amd64 (gobinary) -> Total: 1 (HIGH: 1, CRITICAL: 0)
+usr/share/grafana/data/plugins-bundled/loki/gpx_grafana-loki-datasource_linux_amd64 (gobinary) -> Total: 1 (HIGH: 1, CRITICAL: 0)
+usr/share/grafana/data/plugins-bundled/mssql/gpx_grafana-mssql-datasource_linux_amd64 (gobinary) -> Total: 1 (HIGH: 1, CRITICAL: 0)
+usr/share/grafana/data/plugins-bundled/mysql/gpx_grafana-mysql-datasource_linux_amd64 (gobinary) -> Total: 6 (HIGH: 6, CRITICAL: 0)
+usr/share/grafana/data/plugins-bundled/opentsdb/gpx_grafana-opentsdb-datasource_linux_amd64 (gobinary) -> Total: 1 (HIGH: 1, CRITICAL: 0)
+usr/share/grafana/data/plugins-bundled/prometheus/gpx_grafana-prometheus-datasource_linux_amd64 (gobinary) -> Total: 1 (HIGH: 1, CRITICAL: 0)
+usr/share/grafana/data/plugins-bundled/stackdriver/gpx_grafana_cloudmonitoring_datasource_linux_amd64 (gobinary) -> Total: 1 (HIGH: 1, CRITICAL: 0)
+usr/share/grafana/data/plugins-bundled/tempo/gpx_grafana-tempo-datasource_linux_amd64 (gobinary) -> Total: 3 (HIGH: 3, CRITICAL: 0)
+usr/share/grafana/data/plugins-bundled/zipkin/gpx_grafana-zipkin-datasource_linux_amd64 (gobinary) -> Total: 1 (HIGH: 1, CRITICAL: 0)
+
+== ollama
+usr/bin/ollama (gobinary) -> Total: 1 (HIGH: 1, CRITICAL: 0)
+
+== prometheus
+bin/prometheus (gobinary) -> Total: 1 (HIGH: 1, CRITICAL: 0)
+bin/promtool (gobinary) -> Total: 1 (HIGH: 1, CRITICAL: 0)
+

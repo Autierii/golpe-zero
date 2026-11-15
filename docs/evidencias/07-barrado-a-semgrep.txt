@@ -1,0 +1,28 @@
+Execução #1 (run 43747036950) — BARRADA pelo Semgrep
+https://github.com/Autierii/golpe-zero/actions/runs/43747036950
+
+│ 1 Code Finding │
+└────────────────┘
+                           
+    infra/bootstrap/main.tf
+    >> terraform.azure.security.storage.storage-queue-services-logging.storage-queue-services-logging
+          [[ Blocking ]]
+          Storage Analytics logs detailed information about successful and failed requests to a storage     
+          service. This information can be used to monitor individual requests and to diagnose issues with a
+          storage service. Requests are logged on a best-effort basis.                                      
+          Details: https://sg.run/0yEv                                                                      
+                                                                                                            
+           47┆ resource "azurerm_storage_account" "tfstate" {
+           48┆   name                              = "st${var.prefixo}tf${random_string.sufixo.result}"
+           49┆   resource_group_name               = azurerm_resource_group.tfstate.name
+           50┆   location                          = azurerm_resource_group.tfstate.location
+           51┆   account_tier                      = "Standard"
+           52┆   account_replication_type          = "LRS"
+           53┆   min_tls_version                   = "TLS1_2"
+           54┆   https_traffic_only_enabled        = true
+           55┆   allow_nested_items_to_be_public   = false
+           56┆   shared_access_key_enabled         = false # só Entra ID (RBAC); nada de chave de acesso
+             [hid 9 additional lines, adjust with --max-lines-per-finding] 
+
+ • Findings: 1 (1 blocking)
+##[error]Process completed with exit code 1.

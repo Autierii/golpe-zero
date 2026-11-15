@@ -1,0 +1,12 @@
+Execução #6 (run 43755542216) — BARRADA pelo teste de segurança pós-deploy
+https://github.com/Autierii/golpe-zero/actions/runs/43755542216
+
+/metrics sem token -> HTTP 200
+##[error]/metrics exposto sem token
+/node-metrics sem token -> HTTP 200
+##[error]/node-metrics exposto sem token
+cabeçalho strict-transport-security ok
+cabeçalho content-security-policy ok
+cabeçalho x-frame-options ok
+cabeçalho x-content-type-options ok
+HTTP puro -> 308 (esperado redirecionar)

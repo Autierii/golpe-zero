@@ -1,0 +1,10 @@
+﻿$ az network nsg rule list -g rg-golpezero-prod --nsg-name nsg-golpezero-app -o table
+Nome                 Prioridade    Direcao    Acesso    Protocolo    Origem    Portas
+-------------------  ------------  ---------  --------  -----------  --------  --------
+permitir-http3       110           Inbound    Allow     Udp          Internet  443
+permitir-http-https  100           Inbound    Allow     Tcp          Internet  80,443
+negar-todo-o-resto   4096          Inbound    Deny      *            *         *
+
+
+$ teste de conexão na porta 22 (SSH) do IP público
+porta 22: fechada/filtrada (sem resposta) - não existe regra que a libere

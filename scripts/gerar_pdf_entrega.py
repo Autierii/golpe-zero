@@ -63,10 +63,14 @@ SECOES = [
          "ficam em GitHub Secrets do environment 'producao', restrito à branch main. Não existe senha da "
          "nuvem: o login é federado (OIDC). As actions são fixadas por SHA.",
          ["09", "10"]),
-        ("Execução barrada e corrigida",
-         "Primeira execução real do pipeline: o Semgrep barrou o Terraform do bootstrap "
-         "(storage-queue-services-logging, Storage do state sem log de auditoria). O commit seguinte ligou o "
-         "logging e o pipeline passou.",
+        ("Execuções barradas e corrigidas (duas, reais)",
+         "1) Primeira execução do pipeline: o Semgrep barrou o Terraform do bootstrap "
+         "(storage-queue-services-logging: Storage do state sem log de auditoria). O build nem começou. O commit "
+         "seguinte ligou o logging e o pipeline passou. "
+         "2) O teste de segurança pós-deploy (que roda contra a URL pública) barrou o deploy #6: /metrics e "
+         "/node-metrics respondiam sem token por causa de uma configuração antiga no container do Caddy. O "
+         "deploy.sh passou a reiniciar o Caddy quando o Caddyfile muda, e a execução #7 ficou verde, com 404 "
+         "sem token.",
          ["07", "08"]),
     ]),
     ("3. Observabilidade (3,0)", [
@@ -88,9 +92,10 @@ SECOES = [
          "docs/responsabilidade-compartilhada.md. LGPD: o texto e o print ficam só em memória (não são "
          "gravados), os logs do Caddy mascaram o IP e removem query string e Authorization, e as métricas não "
          "têm dado pessoal. Custo: cerca de US$ 118/mês, ou cerca de US$ 47 no período da GS (B4as_v2 em North Central "
-         "US), dentro do crédito Azure for Students, com budget e alerta por e-mail. README com a Ficha Técnica "
-         "e o passo a passo para reproduzir do zero.",
-         ["14", "15"]),
+         "US, únicas permitidas pela política e pela cota da assinatura da FIAP), dentro do crédito Azure for "
+         "Students. README com a Ficha Técnica "
+         "e o passo a passo para reproduzir do zero. Abaixo, o teste de segurança feito da internet.",
+         ["15"]),
     ]),
 ]
 
@@ -118,10 +123,17 @@ def fonte(pdf: FPDF) -> None:
         reg = bold = Path("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf")
     pdf.add_font("ui", "", str(reg))
     pdf.add_font("ui", "B", str(bold))
+    mono = win / "consola.ttf"
+    if not mono.exists():
+        mono = Path("/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf")
+    pdf.add_font("mono", "", str(mono))
 
 
 def evidencia(pdf: PDF, numero: str) -> None:
-    arquivos = sorted(EVID.glob(f"{numero}-*.png")) + sorted(EVID.glob(f"{numero}-*.jpg"))
+    arquivos = sorted(
+        [a for a in EVID.glob(f"{numero}-*") if a.suffix.lower() in {".png", ".jpg", ".txt"}],
+        key=lambda a: (a.stem, a.suffix != ".txt"),
+    )
     if not arquivos:
         pdf.set_font("ui", "", 9)
         pdf.set_text_color(176, 0, 32)
@@ -130,9 +142,15 @@ def evidencia(pdf: PDF, numero: str) -> None:
         return
     for arq in arquivos:
         largura = pdf.w - pdf.l_margin - pdf.r_margin
-        if pdf.get_y() > pdf.h - 90:
-            pdf.add_page()
-        pdf.image(str(arq), w=largura)
+        if arq.suffix.lower() == ".txt":
+            pdf.set_font("mono", "", 6.5)
+            pdf.set_fill_color(242, 244, 248)
+            texto = arq.read_text(encoding="utf-8-sig").replace("	", "    ")
+            pdf.multi_cell(0, 3.2, texto.strip(), fill=True, new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+        else:
+            if pdf.get_y() > pdf.h - 110:
+                pdf.add_page()
+            pdf.image(str(arq), w=largura * 0.85)
         pdf.set_font("ui", "", 8)
         pdf.set_text_color(90)
         pdf.cell(0, 5, arq.name, new_x=XPos.LMARGIN, new_y=YPos.NEXT)
@@ -199,7 +217,7 @@ def main() -> None:
             pdf.set_font("ui", "B", 12)
             pdf.cell(0, 8, sub, new_x=XPos.LMARGIN, new_y=YPos.NEXT)
             pdf.set_font("ui", "", 10)
-            pdf.multi_cell(0, 5, texto)
+            pdf.multi_cell(0, 5, texto, new_x=XPos.LMARGIN, new_y=YPos.NEXT)
             pdf.ln(2)
             for n in prints:
                 evidencia(pdf, n)

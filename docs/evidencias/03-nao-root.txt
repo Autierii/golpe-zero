@@ -1,0 +1,7 @@
+Checagem 'imagem não roda como root' — pipeline, run 43756658079
+
+Build + Trivy (prometheus): USER da imagem: '65534:65534'
+Build + Trivy (api): USER da imagem: '10001:10001'
+Build + Trivy (ollama): USER da imagem: '10002:10002'
+Build + Trivy (frontend): USER da imagem: '101'
+Build + Trivy (grafana): USER da imagem: '472'

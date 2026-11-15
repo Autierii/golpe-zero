@@ -1,21 +1,20 @@
-# Roteiro de evidências (prints para o PDF de entrega)
+# Evidências da entrega
 
-Salve cada print nesta pasta com o nome indicado. O PDF final referencia esses arquivos.
+Os prints (`.jpg`) e as saídas de comando (`.txt`) desta pasta entram no PDF de entrega, gerado com `python scripts/gerar_pdf_entrega.py` em `docs/Entrega-SecureDevOps-GolpeZero.pdf`.
 
-| # | Arquivo | O que mostrar | Critério |
+| # | Arquivo(s) | O que comprova | Critério |
 |---|---|---|---|
-| 01 | `01-mvp-no-ar.png` | O app aberto na URL pública, com cadeado HTTPS, analisando uma mensagem e mostrando o veredito "É GOLPE" | Geral |
-| 02 | `02-compose-ps.png` | Saída do deploy (job "Deploy na Azure") com `docker compose ps`: 7 serviços *healthy/running* | Container |
-| 03 | `03-nao-root.png` | Passo "Confere que a imagem não roda como root" com `USER da imagem: '10001:10001'` | Container |
-| 04 | `04-nsg.png` | Portal Azure → NSG `nsg-golpezero-app` → regras de entrada: só 80/443 e "negar-todo-o-resto" (sem 22) | IaC |
-| 05 | `05-state-remoto.png` | Portal → Storage `stgolpezerotf…` → container `tfstate` com `golpe-zero/prod.tfstate` | IaC |
-| 06 | `06-infra-apply.png` | Workflow **infra** verde, com o `terraform apply` e os outputs | IaC |
-| 07 | `07-pipeline-barrado.png` | Execução **vermelha** [#1](https://github.com/Autierii/golpe-zero/actions/runs/43747036950): o Semgrep barrou o Terraform (`storage-queue-services-logging`) e o build nem começou | Pipeline |
-| 08 | `08-pipeline-corrigido.png` | Execução seguinte **verde** (commit "fix(iac): liga logging do Queue service…"), com build, Trivy, deploy e smoke test | Pipeline |
-| 09 | `09-secrets.png` | Settings → Environments → `producao` → secrets (nomes, sem valores) | Pipeline |
-| 10 | `10-trivy.png` | Artefato ou log do Trivy da imagem da API | Pipeline |
-| 11 | `11-dashboard.png` | Grafana com os 4 sinais de ouro preenchidos (depois de rodar `gerar-trafego.sh`) | Observabilidade |
-| 12 | `12-alerta-firing.png` | Grafana → Alerting → "Taxa de erro acima de 5%" em **Firing** | Observabilidade |
-| 13 | `13-alerta-normal.png` | O mesmo alerta de volta para **Normal** depois de religar o Ollama | Observabilidade |
-| 14 | `14-custo.png` | Portal → Cost Management, ou o budget criado | Documentação |
-| 15 | `15-metrics-bloqueado.png` | `curl https://…/metrics` sem token devolvendo 404 | Segurança (extra) |
+| 01 | `01-mvp-a-mensagem.jpg`, `01-mvp-b-veredito.jpg` | App na URL pública analisando o golpe do falso parente: "É GOLPE", próximo passo, sinais e fonte | Geral |
+| 02 | `02-compose-ps.txt` | Os 7 serviços saudáveis na VM. Só o Caddy publica 80/443. Todos com `cap_drop=ALL` e `no-new-privileges` | Container |
+| 03 | `03-nao-root.txt` | Checagem do pipeline: o USER de cada imagem (10001, 101, 10002, 472, 65534) | Container |
+| 04 | `04-nsg-regras.txt` | NSG: só 80/443 e `negar-todo-o-resto`. A porta 22 não abre | IaC |
+| 05 | `05-state-remoto.txt` | State no Storage (sem chave compartilhada, TLS 1.2) e `*.tfstate`/`*.tfvars` ignorados pelo Git | IaC |
+| 06 | `06-infra-terraform-apply.jpg` | Workflow **infra** verde (terraform apply via OIDC) | IaC |
+| 07 | `07-barrado-a-semgrep.*`, `07-barrado-b-metrics-exposto.*` | Duas execuções **barradas** reais: o Semgrep no Terraform e o teste de segurança pós-deploy | Pipeline |
+| 08 | `08-corrigido-deploy-verde.jpg`, `08-corrigido.txt` | Execução **corrigida**: verde, com deploy e testes de segurança passando | Pipeline |
+| 09 | `09-secrets.txt` | Secrets do environment `producao` (só os nomes) e login por OIDC | Pipeline |
+| 10 | `10-trivy.txt` | Trivy nas 5 imagens: 0 CRITICAL | Pipeline |
+| 11 | `11-dashboard-a-sinais.jpg`, `11-dashboard-b-impacto.jpg` | Grafana com os 4 sinais de ouro e os indicadores de impacto | Observabilidade |
+| 12 | `12-alerta-firing.jpg` | Alerta "Taxa de erro acima de 5%" em **Firing** (Ollama parado de propósito) | Observabilidade |
+| 13 | `13-alerta-historico-normal.jpg` | Histórico do alerta: Pending → Alerting → Normal | Observabilidade |
+| 15 | `15-metrics-bloqueado.txt` | Teste feito da internet: `/metrics` dá 404, cabeçalhos de segurança presentes e HTTP vira HTTPS | Segurança |

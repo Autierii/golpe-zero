@@ -1,0 +1,17 @@
+﻿$ az storage blob list --account-name stgolpezerotfrir32t -c tfstate --auth-mode login -o table
+Blob                     Tamanho    Modificado
+-----------------------  ---------  -------------------------
+golpe-zero/prod.tfstate  27680      2026-11-15T19:45:38+00:00
+
+
+$ az storage account show -n stgolpezerotfrir32t (segurança)
+ChaveCompartilhada    TlsMinimo    SomenteHttps    AcessoPublicoBlob
+--------------------  -----------  --------------  -------------------
+False                 TLS1_2       True            False
+
+
+$ git check-ignore (state e tfvars fora do repositório)
+.gitignore:12:*.tfstate	infra/bootstrap/terraform.tfstate
+.gitignore:5:*.tfvars	infra/bootstrap/terraform.tfvars
+.gitignore:7:backend.hcl	infra/backend.hcl
+

@@ -1,0 +1,18 @@
+Estado ao vivo da stack na VM (az vm run-command; sem SSH):
+
+SERVICE         STATUS                   PORTS
+api             Up 7 minutes (healthy)   8000/tcp
+caddy           Up 32 minutes            0.0.0.0:80->80/tcp, [::]:80->80/tcp, 0.0.0.0:443->443/tcp, [::]:443->443/tcp, 0.0.0.0:443->443/udp, [::]:443->443/udp, 2019/tcp
+frontend        Up 8 minutes (healthy)   8080/tcp
+grafana         Up 7 minutes             3000/tcp
+node-exporter   Up 47 minutes            9100/tcp
+ollama          Up 3 minutes (healthy)   11434/tcp
+prometheus      Up 7 minutes             9090/tcp
+
+/golpe-zero-api-1 user=10001:10001 read_only=true cap_drop=[ALL] [no-new-privileges:true]
+/golpe-zero-caddy-1 user= read_only=false cap_drop=[ALL] [no-new-privileges:true]
+/golpe-zero-frontend-1 user=101 read_only=true cap_drop=[ALL] [no-new-privileges:true]
+/golpe-zero-grafana-1 user=472 read_only=false cap_drop=[ALL] [no-new-privileges:true]
+/golpe-zero-node-exporter-1 user=nobody read_only=true cap_drop=[ALL] [no-new-privileges:true label=disable]
+/golpe-zero-ollama-1 user=10002:10002 read_only=false cap_drop=[ALL] [no-new-privileges:true]
+/golpe-zero-prometheus-1 user=65534:65534 read_only=true cap_drop=[ALL] [no-new-privileges:true]

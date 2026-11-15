@@ -1,0 +1,12 @@
+Execução #7 (run 43756658079) — CORRIGIDA: build, Trivy, deploy e testes verdes
+https://github.com/Autierii/golpe-zero/actions/runs/43756658079
+
+{"status":"online","timestamp":1794774284.3255336,"motor_vetorial_carregado":true,"total_chunks_oficiais":158,"ollama_local_ativo":true,"modelo_padrao":"qwen2.5:3b"}
+MVP no ar
+/metrics sem token -> HTTP 404
+/node-metrics sem token -> HTTP 404
+cabeçalho strict-transport-security ok
+cabeçalho content-security-policy ok
+cabeçalho x-frame-options ok
+cabeçalho x-content-type-options ok
+HTTP puro -> 308 (esperado redirecionar)
