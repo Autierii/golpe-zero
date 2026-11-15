@@ -47,7 +47,7 @@ groups:
               instant: true
               expr: >-
                 (
-                  (sum(rate(http_requests_total{status=~"5.."}[5m])) or vector(0))
+                  (sum(rate(http_requests_total{handler=~"/api/.*",status=~"5.."}[5m])) or vector(0))
                   + (sum(rate(golpezero_falhas_llm_total[5m])) or vector(0))
                 ) / clamp_min(sum(rate(http_requests_total{handler=~"/api/.*"}[5m])), 0.0001)
           - refId: C

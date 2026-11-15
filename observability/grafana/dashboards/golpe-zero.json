@@ -209,7 +209,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "(( sum(rate(http_requests_total{status=~\"5..\"}[5m])) or vector(0) ) / clamp_min(sum(rate(http_requests_total{handler=~\"/api/.*\"}[5m])), 0.0001)) + (( sum(rate(golpezero_falhas_llm_total[5m])) or vector(0) ) / clamp_min(sum(rate(http_requests_total{handler=~\"/api/analisar/.*\"}[5m])), 0.0001))",
+          "expr": "(( sum(rate(http_requests_total{handler=~\"/api/.*\",status=~\"5..\"}[5m])) or vector(0) ) / clamp_min(sum(rate(http_requests_total{handler=~\"/api/.*\"}[5m])), 0.0001)) + (( sum(rate(golpezero_falhas_llm_total[5m])) or vector(0) ) / clamp_min(sum(rate(http_requests_total{handler=~\"/api/analisar/.*\"}[5m])), 0.0001))",
           "datasource": {
             "type": "prometheus",
             "uid": "prometheus"
@@ -262,7 +262,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "sum(increase(http_requests_total{handler=~\"/api/analisar/.*\",status=\"200\"}[24h]))",
+          "expr": "round(sum(increase(http_requests_total{handler=~\"/api/analisar/.*\",status=\"200\"}[24h])))",
           "datasource": {
             "type": "prometheus",
             "uid": "prometheus"
@@ -459,7 +459,9 @@
                 "value": 0.05
               }
             ]
-          }
+          },
+          "max": 1,
+          "min": 0
         },
         "overrides": []
       },
@@ -475,7 +477,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "( sum(rate(http_requests_total{status=~\"5..\"}[5m])) or vector(0) ) / clamp_min(sum(rate(http_requests_total{handler=~\"/api/.*\"}[5m])), 0.0001)",
+          "expr": "( sum(rate(http_requests_total{handler=~\"/api/.*\",status=~\"5..\"}[5m])) or vector(0) ) / clamp_min(sum(rate(http_requests_total{handler=~\"/api/.*\"}[5m])), 0.0001)",
           "legendFormat": "HTTP 5xx",
           "datasource": {
             "type": "prometheus",
@@ -493,7 +495,7 @@
         },
         {
           "refId": "C",
-          "expr": "sum(rate(http_requests_total{status=~\"4..\"}[5m])) / clamp_min(sum(rate(http_requests_total{handler=~\"/api/.*\"}[5m])),0.0001)",
+          "expr": "sum(rate(http_requests_total{handler=~\"/api/.*\",status=~\"4..\"}[5m])) / clamp_min(sum(rate(http_requests_total{handler=~\"/api/.*\"}[5m])),0.0001)",
           "legendFormat": "HTTP 4xx (entrada inválida)",
           "datasource": {
             "type": "prometheus",
