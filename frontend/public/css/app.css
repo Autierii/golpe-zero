@@ -100,7 +100,7 @@ main { max-width: 72rem; margin: 0 auto; padding: 1.25rem 1.1rem 2rem; }
 .grade-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
 .pilha > * + * { margin-top: 1rem; }
 
-.cartao { background: var(--papel); border: 1px solid var(--linha); border-radius: var(--raio); box-shadow: var(--sombra); padding: 1.4rem; }
+.cartao { min-width: 0; background: var(--papel); border: 1px solid var(--linha); border-radius: var(--raio); box-shadow: var(--sombra); padding: 1.4rem; }
 .cartao-destaque { box-shadow: var(--sombra-forte); }
 .rotulo-secao { display: inline-flex; align-items: center; gap: .4rem; font-size: .8rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--coral); margin-bottom: .4rem; }
 
@@ -268,7 +268,7 @@ details.cartao[open] summary::after { content: "–"; }
 
 /* família */
 .whats-previa { background: #e5ddd5; border-radius: 18px; padding: 1.2rem; }
-.whats-balao { background: #dcf8c6; border-radius: 12px 12px 4px 12px; padding: .8rem 1rem; margin-left: auto; max-width: 92%; white-space: pre-wrap; font-size: .98rem; box-shadow: 0 1px 1px rgba(0,0,0,.12); }
+.whats-balao { background: #dcf8c6; border-radius: 12px 12px 4px 12px; padding: .8rem 1rem; margin-left: auto; max-width: 92%; white-space: pre-wrap; overflow-wrap: anywhere; font-size: .98rem; box-shadow: 0 1px 1px rgba(0,0,0,.12); }
 label.campo { display: block; font-weight: 700; margin-bottom: .35rem; }
 input[type="text"] { width: 100%; min-height: 3.3rem; font: inherit; font-size: 1.05rem; padding: .7rem 1rem; border: 2px solid var(--linha); border-radius: 14px; background: #fffdf9; }
 input[type="text"]:focus { border-color: var(--azul); outline: none; box-shadow: 0 0 0 4px var(--azul-claro); }
