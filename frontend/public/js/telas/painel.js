@@ -94,15 +94,14 @@ function graficoBarrasVerticais(dados) {
     }));
 }
 
+// Barras horizontais em HTML (não SVG): o texto fica no tamanho real da página,
+// legível no celular e ampliável pelo A+.
 function graficoBarrasHorizontais(dados, cor) {
-  const W = 460, linha = 30, H = dados.length * linha + 10, rotLarg = 170, area = W - rotLarg - 70;
   const max = Math.max(...dados.map((d) => d[1]));
-  return s("svg", { viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": dados.map((d) => `${d[0]}: ${num(d[1])}`).join("; ") },
-    dados.map(([rot, v], i) => {
-      const y = 5 + i * linha, w = Math.max(3, (v / max) * area);
-      return s("g", {},
-        s("text", { x: rotLarg - 8, y: y + 18, "text-anchor": "end" }, rot),
-        s("rect", { x: rotLarg, y: y + 5, width: w, height: 18, rx: 6, fill: cor, opacity: 0.35 + 0.65 * (v / max) }),
-        s("text", { x: rotLarg + w + 6, y: y + 18, class: "barra-rotulo" }, num(v)));
-    }));
+  return h("ul", { class: "barras", role: "list" },
+    dados.map(([rot, v]) => h("li", {},
+      h("span", { class: "barras-rotulo" }, rot),
+      h("span", { class: "barras-trilho" },
+        h("span", { class: "barras-valor", style: `width:${Math.max(2, (100 * v) / max)}%;background:${cor};opacity:${(0.4 + 0.6 * (v / max)).toFixed(2)}` })),
+      h("span", { class: "barras-num" }, num(v)))));
 }

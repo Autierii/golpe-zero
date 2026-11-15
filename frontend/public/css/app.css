@@ -234,6 +234,13 @@ textarea:focus { border-color: var(--azul); outline: none; box-shadow: 0 0 0 4px
 .grafico .eixo { stroke: var(--linha); }
 .grafico text { font-family: inherit; fill: var(--tinta-suave); font-size: 12px; }
 .grafico .barra-rotulo { fill: var(--tinta); font-weight: 700; font-size: 12px; }
+.barras { list-style: none; padding: 0; margin: .5rem 0 0; display: grid; gap: .55rem; }
+.barras li { display: grid; grid-template-columns: minmax(7rem, 38%) 1fr auto; gap: .6rem; align-items: center; font-size: .92rem; }
+.barras-rotulo { color: var(--tinta-suave); line-height: 1.25; }
+.barras-trilho { height: .95rem; background: #f1ece3; border-radius: 999px; overflow: hidden; }
+.barras-valor { display: block; height: 100%; border-radius: 999px; }
+.barras-num { font-weight: 700; font-variant-numeric: tabular-nums; min-width: 3ch; text-align: right; }
+@media (max-width: 560px) { .barras li { grid-template-columns: 1fr auto; } .barras-trilho { grid-column: 1 / -1; grid-row: 2; } }
 .ao-vivo { display: inline-flex; align-items: center; gap: .4rem; font-size: .8rem; font-weight: 700; color: var(--ok); text-transform: uppercase; letter-spacing: .06em; }
 .ao-vivo::before { content: ""; width: .6rem; height: .6rem; border-radius: 50%; background: var(--ok); animation: piscar 1.6s ease-in-out infinite; }
 @keyframes piscar { 50% { opacity: .25; } }
