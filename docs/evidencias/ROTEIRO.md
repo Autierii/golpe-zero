@@ -4,7 +4,7 @@ Os prints (`.jpg`) e as saídas de comando (`.txt`) desta pasta entram no PDF de
 
 | # | Arquivo(s) | O que comprova | Critério |
 |---|---|---|---|
-| 01 | `01-mvp-a-mensagem.jpg`, `01-mvp-b-veredito.jpg` | App na URL pública analisando o golpe do falso parente: "É GOLPE", próximo passo, sinais e fonte | Geral |
+| 01 | `01-mvp-a-verificar.jpg`, `01-mvp-b-recursos.jpg` | App em produção no celular: fluxo de verificação (mensagem → análise → veredito → o que fazer) e as telas Família, Números e Aprender | Geral |
 | 02 | `02-compose-ps.txt` | Os 7 serviços saudáveis na VM. Só o Caddy publica 80/443. Todos com `cap_drop=ALL` e `no-new-privileges` | Container |
 | 03 | `03-nao-root.txt` | Checagem do pipeline: o USER de cada imagem (10001, 101, 10002, 472, 65534) | Container |
 | 04 | `04-nsg-regras.txt` | NSG: só 80/443 e `negar-todo-o-resto`. A porta 22 não abre | IaC |
