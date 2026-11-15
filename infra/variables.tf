@@ -22,9 +22,9 @@ variable "dominio_label" {
 }
 
 variable "vm_size" {
-  description = "Tamanho da VM. D4as_v5 = 4 vCPU/16 GB (LLM 3B responde em ~10-25 s). Mais barato: Standard_D2as_v5"
+  description = "Tamanho da VM. B4as_v2 = 4 vCPU/16 GB burstable (única de 4 vCPU com cota no Azure for Students da FIAP)"
   type        = string
-  default     = "Standard_D4as_v5"
+  default     = "Standard_B4as_v2"
 }
 
 variable "ollama_model" {

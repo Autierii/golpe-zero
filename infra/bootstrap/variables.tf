@@ -20,9 +20,9 @@ variable "prefixo" {
 }
 
 variable "location" {
-  description = "Região Azure (precisa ser permitida pela política do Azure for Students)"
+  description = "Região Azure. A política da FIAP só permite: spaincentral, canadacentral, italynorth, southafricanorth, northcentralus"
   type        = string
-  default     = "eastus2"
+  default     = "northcentralus"
 }
 
 variable "email_alerta_custo" {

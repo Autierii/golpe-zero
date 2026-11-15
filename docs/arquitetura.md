@@ -6,9 +6,9 @@
 flowchart LR
     idoso(["Idoso 60+ / familiar<br/>celular ou totem"]) -->|HTTPS 443| caddy
 
-    subgraph azure["Azure · rg-golpezero-prod · East US 2"]
+    subgraph azure["Azure · rg-golpezero-prod · North Central US"]
       subgraph nsg["NSG: entra só 80/443 · porta 22 FECHADA"]
-        subgraph vm["VM Ubuntu 24.04 · Standard_D4as_v5 · Trusted Launch"]
+        subgraph vm["VM Ubuntu 24.04 · Standard_B4as_v2 · Trusted Launch"]
           caddy["Caddy<br/>TLS Let's Encrypt · CSP/HSTS<br/>limite 8 MB · logs sem query"]
           front["frontend<br/>nginx não-root"]
           api["api FastAPI<br/>RAG + YOLOv8n<br/>UID 10001 · read-only"]
@@ -25,7 +25,7 @@ flowchart LR
           graf --> prom
         end
       end
-      pip["IP público estático<br/>golpezero.eastus2.cloudapp.azure.com"] --- caddy
+      pip["IP público estático<br/>golpezero.northcentralus.cloudapp.azure.com"] --- caddy
     end
 
     subgraph gh["GitHub"]
@@ -74,4 +74,4 @@ Todos os containers rodam com `no-new-privileges` e `cap_drop: ALL`, têm limite
 | OIDC com identidade gerenciada | Service principal com segredo | Não existe segredo da nuvem para vazar. O token vale só para este repositório, no environment `producao`. |
 | Caddy | nginx com certbot | TLS automático e renovação sem cron, numa configuração de cerca de 60 linhas. |
 | GHCR | Azure Container Registry | Grátis, e integrado ao `GITHUB_TOKEN`. O ACR Basic custa cerca de US$ 5/mês. |
-| East US 2 | Brazil South | A D4as_v5 custa US$ 0,172/h em East US 2 e US$ 0,276/h em Brazil South (60% a mais). Não há dado pessoal persistido, ver [LGPD](lgpd.md). |
+| North Central US | Brazil South | A política do Azure for Students da FIAP só libera 5 regiões (spaincentral, canadacentral, italynorth, southafricanorth, northcentralus). North Central US é a mais barata delas. Não há dado pessoal persistido, ver [LGPD](lgpd.md). |

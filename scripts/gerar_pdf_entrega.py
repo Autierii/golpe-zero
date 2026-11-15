@@ -15,7 +15,7 @@ RAIZ = Path(__file__).resolve().parent.parent
 EVID = RAIZ / "docs" / "evidencias"
 SAIDA = RAIZ / "docs" / "Entrega-SecureDevOps-GolpeZero.pdf"
 
-URL = "https://golpezero.eastus2.cloudapp.azure.com"
+URL = "https://golpezero.northcentralus.cloudapp.azure.com"
 REPO = "https://github.com/Autierii/golpe-zero"
 LINKS = [
     ("MVP no ar", URL),
@@ -87,8 +87,8 @@ SECOES = [
          "Diagrama e decisões em docs/arquitetura.md. Modelo IaaS camada a camada em "
          "docs/responsabilidade-compartilhada.md. LGPD: o texto e o print ficam só em memória (não são "
          "gravados), os logs do Caddy mascaram o IP e removem query string e Authorization, e as métricas não "
-         "têm dado pessoal. Custo: cerca de US$ 134/mês, ou cerca de US$ 53 no período da GS (D4as_v5 em East US "
-         "2), dentro do crédito Azure for Students, com budget e alerta por e-mail. README com a Ficha Técnica "
+         "têm dado pessoal. Custo: cerca de US$ 118/mês, ou cerca de US$ 47 no período da GS (B4as_v2 em North Central "
+         "US), dentro do crédito Azure for Students, com budget e alerta por e-mail. README com a Ficha Técnica "
          "e o passo a passo para reproduzir do zero.",
          ["14", "15"]),
     ]),

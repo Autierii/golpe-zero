@@ -1,6 +1,6 @@
 # Copie para terraform.tfvars (que NÃO vai para o Git) e preencha.
 subscription_id    = "00000000-0000-0000-0000-000000000000"
 github_repo        = "Autierii/golpe-zero"
-location           = "eastus2"
+location           = "northcentralus"
 email_alerta_custo = "seu-email@exemplo.com"
 orcamento_usd      = 60

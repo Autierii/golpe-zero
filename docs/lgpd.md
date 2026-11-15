@@ -21,4 +21,4 @@
 
 ## Transferência internacional
 
-A VM fica em East US 2 (EUA) por custo. Como nenhum dado pessoal é **armazenado**, só processado em memória por segundos, o risco é baixo. A Microsoft oferece cláusulas contratuais padrão (art. 33, II). **Para produção real com bancos e prefeituras**, a recomendação é mudar `location = "brazilsouth"` no Terraform: é uma variável só, cerca de 60% mais cara.
+A VM fica em North Central US (EUA), porque a política da assinatura da FIAP só libera regiões fora do Brasil. Como nenhum dado pessoal é **armazenado**, só processado em memória por segundos, o risco é baixo. A Microsoft oferece cláusulas contratuais padrão (art. 33, II). **Para produção real com bancos e prefeituras**, a recomendação é mudar `location = "brazilsouth"` no Terraform: é uma variável só, cerca de 60% mais cara.

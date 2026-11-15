@@ -10,9 +10,9 @@ Disciplina: **Secure DevOps Tools & Cloud Computing** (Prof. Gabriel Arcanjo) ·
 
 | | |
 |---|---|
-| 🌐 **MVP no ar** | https://golpezero.eastus2.cloudapp.azure.com |
-| 📊 **Dashboard (sem login, só leitura)** | https://golpezero.eastus2.cloudapp.azure.com/grafana/ |
-| 📘 **API (Swagger)** | https://golpezero.eastus2.cloudapp.azure.com/docs |
+| 🌐 **MVP no ar** | https://golpezero.northcentralus.cloudapp.azure.com |
+| 📊 **Dashboard (sem login, só leitura)** | https://golpezero.northcentralus.cloudapp.azure.com/grafana/ |
+| 📘 **API (Swagger)** | https://golpezero.northcentralus.cloudapp.azure.com/docs |
 | 🧠 **Repositório de IA (GenAI + Visão)** | https://github.com/rcm2005/golpe-zero-gs |
 | 📈 **Repositório de dados (Big Data)** | https://github.com/AllanVI9/golpe-zero-database |
 
@@ -29,7 +29,7 @@ Disciplina: **Secure DevOps Tools & Cloud Computing** (Prof. Gabriel Arcanjo) ·
 | **Arquitetura: componentes** | Frontend acessível (nginx) · API FastAPI com agente decisor em 2 etapas · RAG em 158 trechos oficiais · YOLOv8n (5 classes) · Ollama Qwen 2.5:3B · Caddy (TLS) · Prometheus e Grafana · VM Azure criada por Terraform · CI/CD GitHub Actions com Gitleaks, Semgrep e Trivy |
 | **Fontes de dados** | Cartilhas Febraban, Banco Central (Pix e MED), CERT.br, Procon-SP e SSP-SP · estatísticas SSP-SP e IBGE (pipeline de Big Data) · prints sintéticos anotados (visão) |
 | **Modelos de IA utilizados** | Qwen 2.5:3B Instruct (Ollama, 4 bits) · all-MiniLM-L6-v2 (embeddings) · YOLOv8n fine-tuned · Qwen 2.5-0.5B com LoRA (estudo) |
-| **URL do MVP e repositório** | https://golpezero.eastus2.cloudapp.azure.com · https://github.com/Autierii/golpe-zero |
+| **URL do MVP e repositório** | https://golpezero.northcentralus.cloudapp.azure.com · https://github.com/Autierii/golpe-zero |
 | **Indicadores de impacto** | Prints e mensagens analisados · % classificado como golpe · tempo de resposta (p95) · disponibilidade · usuários 60+ ativos · golpes evitados declarados (os 4 primeiros já estão no dashboard) |
 | **ODS conectados** | 10 (redução das desigualdades) · 11 (cidades sustentáveis) · 9 (inovação) · 4 (educação digital) |
 
@@ -139,8 +139,8 @@ terraform init -backend-config=backend.hcl && terraform apply
 | Tarefa | Comando |
 |---|---|
 | Ver os containers | `az vm run-command invoke -g rg-golpezero-prod -n vm-golpezero --command-id RunShellScript --scripts "cd /opt/golpe-zero && docker compose ps"` |
-| Gerar tráfego de exemplo | `./scripts/gerar-trafego.sh https://golpezero.eastus2.cloudapp.azure.com 5` |
-| Disparar o alerta (demo) | `./scripts/disparar-alerta.sh https://golpezero.eastus2.cloudapp.azure.com` |
+| Gerar tráfego de exemplo | `./scripts/gerar-trafego.sh https://golpezero.northcentralus.cloudapp.azure.com 5` |
+| Disparar o alerta (demo) | `./scripts/disparar-alerta.sh https://golpezero.northcentralus.cloudapp.azure.com` |
 | Economizar crédito | `az vm deallocate -g rg-golpezero-prod -n vm-golpezero` (para religar: `az vm start ...`) |
 | Apagar tudo | `terraform -chdir=infra destroy` e depois `terraform -chdir=infra/bootstrap destroy` |
 

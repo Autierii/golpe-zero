@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Gera tráfego realista no MVP para popular o dashboard (mensagens de exemplo,
 # todas fictícias — nenhum dado pessoal real).
-# Uso: ./scripts/gerar-trafego.sh https://golpezero.eastus2.cloudapp.azure.com [rodadas]
+# Uso: ./scripts/gerar-trafego.sh https://golpezero.northcentralus.cloudapp.azure.com [rodadas]
 set -euo pipefail
 URL="${1:?informe a URL do MVP}"; RODADAS="${2:-10}"
 MENSAGENS=(
