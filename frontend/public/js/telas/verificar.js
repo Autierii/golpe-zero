@@ -224,7 +224,8 @@ function mostrarResultado(area, res, aoNova) {
   const v = VEREDITOS[res.veredito] || VEREDITOS.nao_consta;
   const tipo = res.tipo_golpe && !["nao_se_aplica", "erro_inferencia"].includes(res.tipo_golpe) ? nomeDoGolpe(res.tipo_golpe) : null;
   const passo = res.proximo_passo || "Na dúvida, não pague e ligue para o número do verso do seu cartão.";
-  const sinais = (res.sinais_encontrados || []).filter(Boolean).slice(0, 8);
+  const legivel = (t) => { const x = String(t).replace(/_/g, " ").trim(); return x.charAt(0).toUpperCase() + x.slice(1); };
+  const sinais = (res.sinais_encontrados || []).filter(Boolean).slice(0, 8).map(legivel);
   const fraseVoz = `${v.titulo} ${tipo ? `Parece ser o golpe: ${tipo}.` : ""} ${v.sub} O que fazer agora: ${passo}`;
 
   sessionStorage.setItem("gz.ultimo", JSON.stringify({ veredito: res.veredito, tipo, passo })); // sem o texto da mensagem
