@@ -61,6 +61,18 @@ resource "azurerm_storage_account" "tfstate" {
     delete_retention_policy { days = 14 }
     container_delete_retention_policy { days = 14 }
   }
+
+  # Corrigido após o Semgrep barrar o pipeline (storage-queue-services-logging):
+  # Storage Analytics registra leitura/escrita/exclusão para auditoria.
+  queue_properties {
+    logging {
+      delete                = true
+      read                  = true
+      write                 = true
+      version               = "1.0"
+      retention_policy_days = 30
+    }
+  }
   tags = local.tags
 }
 
