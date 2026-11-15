@@ -2,67 +2,45 @@
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Golpe Zero: mande a mensagem suspeita e descubra se é golpe.">
-  <title>Golpe Zero — É golpe?</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="Golpe Zero: mande a mensagem ou o print suspeito e descubra em segundos se é golpe, por quê e o que fazer.">
+  <meta name="theme-color" content="#1e4fd8">
+  <title>Golpe Zero — É golpe? Descubra antes de agir</title>
+  <link rel="icon" href="img/logo.svg" type="image/svg+xml">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="preload" href="fonts/AtkinsonHyperlegible-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/app.css">
+  <script type="module" src="js/app.js"></script>
 </head>
 <body>
-  <a class="pular" href="#principal">Pular para o conteúdo</a>
+  <a class="pular" href="#conteudo">Pular para o conteúdo</a>
+
   <header class="topo">
-    <h1>🛡️ Golpe Zero</h1>
-    <p class="subtitulo">Recebeu uma mensagem estranha? Mande aqui antes de fazer qualquer coisa.</p>
+    <div class="topo-inner">
+      <a class="marca" href="#/" aria-label="Golpe Zero, página inicial">
+        <img class="marca-logo" src="img/logo.svg" alt="" width="40" height="40">
+        <span>Golpe Zero</span>
+      </a>
+      <nav class="nav" aria-label="Principal" id="nav-topo"></nav>
+      <div class="acessib" role="group" aria-label="Acessibilidade">
+        <button type="button" id="fonte-menos" aria-label="Diminuir letra">A−</button>
+        <button type="button" id="fonte-mais" aria-label="Aumentar letra">A+</button>
+        <button type="button" id="contraste" aria-pressed="false" aria-label="Alto contraste">◐</button>
+      </div>
+    </div>
   </header>
 
-  <main id="principal">
-    <form id="form" class="cartao" novalidate>
-      <label for="texto" class="rotulo">1. Cole ou escreva a mensagem que você recebeu</label>
-      <textarea id="texto" name="texto" rows="5" maxlength="4000"
-        placeholder="Exemplo: Oi mãe, troquei de número. Preciso de um Pix urgente..."></textarea>
-
-      <p class="ou" aria-hidden="true">ou</p>
-
-      <label for="foto" class="botao botao-secundario">
-        📷 2. Mandar uma foto ou print da mensagem
-      </label>
-      <input id="foto" name="foto" type="file" accept="image/*" class="escondido">
-      <p id="foto-nome" class="foto-nome" aria-live="polite"></p>
-
-      <button id="enviar" type="submit" class="botao botao-principal">É golpe? Verificar agora</button>
-    </form>
-
-    <section id="carregando" class="cartao escondido" aria-live="polite" role="status">
-      <p class="grande">⏳ Analisando com calma… isso pode levar até 1 minuto.</p>
-      <p>Enquanto isso: <strong>não pague, não clique em links e não passe códigos.</strong></p>
-    </section>
-
-    <section id="resultado" class="cartao escondido" aria-live="assertive" tabindex="-1">
-      <p id="veredito" class="veredito"></p>
-      <h2>O que você deve fazer agora</h2>
-      <p id="proximo-passo" class="grande"></p>
-      <h2>Por que achamos isso</h2>
-      <ul id="sinais"></ul>
-      <p class="fonte">Fonte oficial: <span id="fonte"></span></p>
-      <div class="acoes">
-        <button id="ouvir" type="button" class="botao botao-secundario">🔊 Ouvir a resposta</button>
-        <button id="nova" type="button" class="botao botao-secundario">↩ Verificar outra mensagem</button>
-      </div>
-    </section>
-
-    <aside class="cartao aviso">
-      <h2>Lembre-se sempre</h2>
-      <ul>
-        <li>Banco <strong>nunca</strong> pede senha, código ou que você faça Pix para "proteger" a conta.</li>
-        <li>Na dúvida, <strong>desligue</strong> e ligue você mesmo para o número do verso do seu cartão.</li>
-        <li>Este assistente <strong>ajuda, mas não garante 100%</strong>. Quem decide é você.</li>
-      </ul>
-    </aside>
+  <main id="conteudo" tabindex="-1">
+    <noscript>
+      <div class="cartao">Para usar o Golpe Zero, ative o JavaScript. Enquanto isso: na dúvida, <strong>não pague, não clique em links</strong> e ligue para o número do verso do seu cartão.</div>
+    </noscript>
   </main>
 
+  <nav class="nav-baixo" aria-label="Navegação" id="nav-baixo"></nav>
+
   <footer class="rodape">
-    <p>Seu print é analisado e apagado na hora. Não guardamos seu nome, telefone ou mensagem.</p>
-    <p>Projeto acadêmico FIAP · Global Solution 2026.2 · CitizenTech · <a href="/docs">API</a></p>
+    <span>🔒 Seu print é analisado e apagado na hora. Não guardamos nome, telefone ou mensagem.</span>
+    <span>FIAP · Global Solution 2026.2 · CitizenTech · <a href="/docs">API</a> · <a href="/grafana/">Monitoramento</a></span>
   </footer>
-  <script src="app.js" defer></script>
 </body>
 </html>

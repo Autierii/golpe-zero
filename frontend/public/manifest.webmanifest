@@ -1,0 +1,11 @@
+{
+  "name": "Golpe Zero",
+  "short_name": "Golpe Zero",
+  "description": "Descubra se a mensagem é golpe antes de agir.",
+  "lang": "pt-BR",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fffaf3",
+  "theme_color": "#1e4fd8",
+  "icons": [{ "src": "img/logo.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}
